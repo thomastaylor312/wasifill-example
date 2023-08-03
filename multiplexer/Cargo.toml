@@ -1,5 +1,5 @@
 [package]
-name = "wasifill-example"
+name = "multiplexer"
 version = "0.1.0"
 edition = "2021"
 
@@ -10,8 +10,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wit-bindgen = "0.9"
-serde = { version = "1", features = ["derive"] }
-rmp-serde = "1"
 wasmcloud-actor = { git = "https://github.com/wasmCloud/wasmCloud.git", branch = "main", version = "0.1" }
 
 [profile.release]

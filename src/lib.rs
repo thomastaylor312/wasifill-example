@@ -1,6 +1,6 @@
 ::wit_bindgen::generate!("wasifill");
 
-use ::std::io::{Read, Write};
+use std::io::{Read, Write};
 
 // NOTE: I am only doing this for the types I need, but generated code should probably have all of
 // the types enumerated from the wit definitions. Hopefully once
@@ -17,7 +17,9 @@ struct BrokerMessage {
 
 struct WasifillImpl;
 
-impl Wasifill for WasifillImpl {
+impl exports::wasmcloud::messaging_wasifill::guestcall_messaging::GuestcallMessaging
+    for WasifillImpl
+{
     fn guestcall_messaging(
         operation: ::wit_bindgen::rt::string::String,
     ) -> Result<(), ::wit_bindgen::rt::string::String> {

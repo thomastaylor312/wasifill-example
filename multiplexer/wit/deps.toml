@@ -1,0 +1,4 @@
+bus = "../../../wasmcloud/wit/"
+messaging-wasifill = "../../wit/"
+poll = "https://github.com/WebAssembly/wasi-poll/archive/main.tar.gz"
+io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"

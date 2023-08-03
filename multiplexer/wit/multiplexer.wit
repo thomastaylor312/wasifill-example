@@ -1,0 +1,7 @@
+package wasmcloud:multiplexer
+
+world multiplexer {
+    import wasmcloud:messaging-wasifill/guestcall-messaging
+
+    export wasmcloud:bus/guest
+}
