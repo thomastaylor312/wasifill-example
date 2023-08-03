@@ -1,0 +1,15 @@
+[package]
+name = "wasifill-example"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wit-bindgen = "0.9"
+serde = { version = "1", features = ["derive"] }
+rmp-serde = "1"
+wasmcloud-actor = { git = "https://github.com/wasmCloud/wasmCloud.git", branch = "main", version = "0.1" }

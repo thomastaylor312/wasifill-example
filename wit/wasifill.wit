@@ -1,0 +1,8 @@
+package wasmcloud:messaging-wasifill@0.1.0
+
+world wasifill {
+    export wasmcloud:messaging/consumer@0.1.0
+    import wasmcloud:messaging/handler@0.1.0
+    import wasmcloud:bus/host
+    export guestcall-messaging: func(operation: string) -> result<_, string>
+}
