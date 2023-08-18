@@ -1,0 +1,7 @@
+name = "messaging_wit_test"
+language = "rust"
+type = "actor"
+version = "0.1.0"
+
+[actor]
+claims = ["wasmcloud:messaging"]

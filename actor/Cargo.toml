@@ -1,0 +1,18 @@
+[package]
+name = "messaging-wit-test"
+version = "0.1.0"
+authors = [""]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "messaging_wit_test"
+
+[dependencies]
+wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen.git", rev = "a15cb9dbee4f619b286fc22879a94f7197d55b18" }
+
+[profile.release]
+# Optimize for small code size
+lto = true
+opt-level = "s"
+strip = true
