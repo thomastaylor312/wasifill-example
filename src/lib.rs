@@ -1,6 +1,30 @@
-::wit_bindgen::generate!("wasifill");
+::wit_bindgen::generate!({
+    world: "wasifill",
+    exports: {
+        "wasmcloud:messaging/consumer": WasifillImpl,
+        "wasmcloud:messaging-wasifill/guestcall-messaging": WasifillImpl,
+    }
+});
 
-use std::io::{Read, Write};
+fn msg_to_export_msg(
+    msg: wasmcloud::messaging::types::BrokerMessage,
+) -> exports::wasmcloud::messaging::consumer::BrokerMessage {
+    exports::wasmcloud::messaging::consumer::BrokerMessage {
+        subject: msg.subject,
+        body: msg.body,
+        reply_to: msg.reply_to,
+    }
+}
+
+fn export_msg_to_msg(
+    msg: exports::wasmcloud::messaging::consumer::BrokerMessage,
+) -> wasmcloud::messaging::types::BrokerMessage {
+    wasmcloud::messaging::types::BrokerMessage {
+        subject: msg.subject,
+        body: msg.body,
+        reply_to: msg.reply_to,
+    }
+}
 
 // NOTE: I am only doing this for the types I need, but generated code should probably have all of
 // the types enumerated from the wit definitions. Hopefully once
@@ -68,6 +92,7 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
         exports::wasmcloud::messaging::consumer::BrokerMessage,
         ::wit_bindgen::rt::string::String,
     > {
+        // Take all the parameters and serialize them to the opaque payload we need to send
         let body = ::rmp_serde::to_vec_named(&RequestBody {
             subject,
             body,
@@ -75,31 +100,14 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
         })
         .map_err(|e| e.to_string())?;
 
-        // TODO: I don't know what to do with res here
-        let (res, input, output) = wasmcloud::bus::host::call("Message.Request")?;
-        let mut output_stream = ::wasmcloud_actor::OutputStreamWriter::from(output);
-        output_stream.write_all(&body).map_err(|e| e.to_string())?;
+        // Use the host call function to send the body
+        let ret_data = wasmcloud::bus::host::call_sync(None, "Messaging.Request", &body)?;
 
-        let input_stream = ::wasmcloud_actor::InputStreamReader::from(input);
-
-        let mut de = ::rmp_serde::Deserializer::new(input_stream);
-        match BrokerMessage::deserialize(&mut de) {
-            Ok(msg) => {
-                let mut reader = de.into_inner();
-                if reader.read(&mut [0][..]).unwrap_or_default() > 0 {
-                    return Err("unexpected bytes in stream".to_string());
-                }
-                wait_result(res)?;
-                Ok(msg)
-            }
-            Err(e) => {
-                if let Err(err) = wait_result(res) {
-                    Err(err)
-                } else {
-                    Err(e.to_string())
-                }
-            }
-        }
+        let mut de = ::rmp_serde::Deserializer::new(::std::io::Cursor::new(ret_data));
+        // Get the response data back from the host call
+        BrokerMessage::deserialize(&mut de)
+            .map_err(|e| e.to_string())
+            .map(msg_to_export_msg)
     }
 
     fn request_multi(
@@ -119,67 +127,33 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
         })
         .map_err(|e| e.to_string())?;
 
-        // TODO: I don't know what to do with res here
-        let (res, input, output) = wasmcloud::bus::host::call("Message.RequestMulti")?;
-        let mut output_stream = ::wasmcloud_actor::OutputStreamWriter::from(output);
-
-        output_stream.write_all(&body).map_err(|e| e.to_string())?;
-        let input_stream = ::wasmcloud_actor::InputStreamReader::from(input);
+        let ret_data = wasmcloud::bus::host::call_sync(None, "Messaging.RequestMulti", &body)?;
 
         // Ugly hack to get around remote derive of type
         #[derive(::serde::Deserialize)]
         struct Wrapper(#[serde(with = "BrokerMessage")] wasmcloud::messaging::types::BrokerMessage);
 
-        let mut de = ::rmp_serde::Deserializer::new(input_stream);
-        match <Vec<_> as ::serde::Deserialize>::deserialize(&mut de)
-            .map(|v| v.into_iter().map(|Wrapper(m)| m).collect())
-        {
-            Ok(msgs) => {
-                let mut reader = de.into_inner();
-                if reader.read(&mut [0][..]).unwrap_or_default() > 0 {
-                    return Err("unexpected bytes in stream".to_string());
-                }
-                wait_result(res)?;
-                Ok(msgs)
-            }
-            Err(e) => {
-                if let Err(err) = wait_result(res) {
-                    Err(err)
-                } else {
-                    Err(e.to_string())
-                }
-            }
-        }
+        let mut de = ::rmp_serde::Deserializer::new(::std::io::Cursor::new(ret_data));
+        <Vec<_> as ::serde::Deserialize>::deserialize(&mut de)
+            .map(|v| {
+                v.into_iter()
+                    .map(|Wrapper(m)| msg_to_export_msg(m))
+                    .collect()
+            })
+            .map_err(|e| e.to_string())
     }
 
     fn publish(
         msg: exports::wasmcloud::messaging::consumer::BrokerMessage,
     ) -> Result<(), ::wit_bindgen::rt::string::String> {
-        let body = ::rmp_serde::to_vec_named(&PublishBody { msg }).map_err(|e| e.to_string())?;
+        let body = ::rmp_serde::to_vec_named(&PublishBody {
+            msg: export_msg_to_msg(msg),
+        })
+        .map_err(|e| e.to_string())?;
 
-        // TODO: I don't know what to do with res here
-        let (res, _input, output) = wasmcloud::bus::host::call("Message.Publish")?;
-        let mut output_stream = ::wasmcloud_actor::OutputStreamWriter::from(output);
+        // Obviously I could do this differently, but for generated code it'll generate the same and then return nothing for a unit type return
+        let _ret_data = wasmcloud::bus::host::call_sync(None, "Messaging.Publish", &body)?;
 
-        output_stream.write_all(&body).map_err(|e| e.to_string())?;
-        // NOTE(thomastaylor312): I don't think we need to read anything back from the stream, but
-        // maybe we should be reading something back for completeness?
-        // let input_stream = ::wasmcloud_actor::InputStreamReader::from(input);
-
-        wait_result(res)
-    }
-}
-
-export_wasifill!(WasifillImpl);
-
-// This is the most hacky form of a poll loop until things start working for real and we use async
-// instead
-fn wait_result(res: wasmcloud::bus::host::FutureResult) -> Result<(), String> {
-    loop {
-        if let Some(r) = wasmcloud::bus::host::future_result_get(res) {
-            return r;
-        } else {
-            ::std::thread::sleep(::std::time::Duration::from_millis(5))
-        }
+        Ok(())
     }
 }

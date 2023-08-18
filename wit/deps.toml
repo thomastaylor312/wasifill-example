@@ -1,4 +1,5 @@
-io = "https://github.com/WebAssembly/wasi-io/archive/main.tar.gz"
 bus = "../../wasmcloud/wit/"
 messaging = "../messaging/"
-wasmcloud = "../../wasmcloud/crates/provider-sdk/wit/"
+wasmcloud-core = "../../wasmcloud/crates/provider-sdk/wit/"
+
+io = "./overrides/io/"

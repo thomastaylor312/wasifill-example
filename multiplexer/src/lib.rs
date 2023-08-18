@@ -1,4 +1,9 @@
-wit_bindgen::generate!("multiplexer");
+wit_bindgen::generate!({
+    world: "multiplexer",
+    exports: {
+        "wasmcloud:bus/guest": MultiplexerImpl
+    }
+});
 
 struct MultiplexerImpl;
 
@@ -20,5 +25,3 @@ impl exports::wasmcloud::bus::guest::Guest for MultiplexerImpl {
         }
     }
 }
-
-export_multiplexer!(MultiplexerImpl);
