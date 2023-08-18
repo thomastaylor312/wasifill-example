@@ -1,7 +1,7 @@
 use exports::wasmcloud::messaging::handler::{BrokerMessage, Handler};
 
 wit_bindgen::generate!({
-    world: "messaging",
+    world: "actor-messaging",
     exports: {
         "wasmcloud:messaging/handler": MessagingWitTestActor,
     }

@@ -1,0 +1,12 @@
+// Message broker interface
+// This is a phase 1 interface, and is subject to change
+// This interface is used to send and receive messages from a message broker
+// Note that in this phase 1 interface, subscriptions are defined out of band from this
+// component. Components themselves cannot establish or terminate subscriptions. This may
+// change for phase 2.
+package wasmcloud:actor-messaging@0.1.0
+
+world actor-messaging {
+    import wasmcloud:messaging/consumer@0.1.0
+    export wasmcloud:messaging/handler@0.1.0
+}

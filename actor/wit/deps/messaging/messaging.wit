@@ -29,9 +29,3 @@ interface consumer {
     // Publish a message to a subject without awaiting a response
     publish: func(msg: broker-message) -> result<_, string>
 }
-world messaging {
-    use types.{broker-message}
-    
-    import consumer
-    export handler
-}

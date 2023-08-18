@@ -1,0 +1,4 @@
+[messaging]
+path = "../../messaging/"
+sha256 = "71f28d2cf49e48d8d5798689c57c8dee6c4513ae425008facefbe1a4e927afa5"
+sha512 = "fa5860acf6c375b42debc0f8e1e686f7b26f0f64c2ab425963cc7d21cf4b24ca2a93a1b3ef58aba7f9e06edf1c515b8a16e53381d04e78a758a254eeab6b4d3e"
