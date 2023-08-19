@@ -6,10 +6,13 @@
     }
 });
 
+use crate::exports::wasmcloud::messaging::consumer;
+use crate::wasmcloud::messaging::handler;
+
 fn msg_to_export_msg(
-    msg: wasmcloud::messaging::types::BrokerMessage,
-) -> exports::wasmcloud::messaging::consumer::BrokerMessage {
-    exports::wasmcloud::messaging::consumer::BrokerMessage {
+    msg: handler::BrokerMessage,
+) -> consumer::BrokerMessage {
+    consumer::BrokerMessage {
         subject: msg.subject,
         body: msg.body,
         reply_to: msg.reply_to,
@@ -17,9 +20,9 @@ fn msg_to_export_msg(
 }
 
 fn export_msg_to_msg(
-    msg: exports::wasmcloud::messaging::consumer::BrokerMessage,
-) -> wasmcloud::messaging::types::BrokerMessage {
-    wasmcloud::messaging::types::BrokerMessage {
+    msg: consumer::BrokerMessage,
+) -> handler::BrokerMessage {
+    handler::BrokerMessage {
         subject: msg.subject,
         body: msg.body,
         reply_to: msg.reply_to,
@@ -32,7 +35,7 @@ fn export_msg_to_msg(
 // jankiness.
 
 #[derive(::serde::Deserialize, ::serde::Serialize)]
-#[serde(remote = "wasmcloud::messaging::types::BrokerMessage")]
+#[serde(remote = "handler::BrokerMessage")]
 struct BrokerMessage {
     subject: ::wit_bindgen::rt::string::String,
     body: Option<::wit_bindgen::rt::vec::Vec<u8>>,
@@ -80,7 +83,7 @@ struct RequestMultiBody {
 #[derive(Debug, ::serde::Serialize, ::serde::Deserialize)]
 struct PublishBody {
     #[serde(with = "BrokerMessage")]
-    msg: wasmcloud::messaging::types::BrokerMessage,
+    msg: handler::BrokerMessage,
 }
 
 impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
@@ -89,7 +92,7 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
         body: Option<::wit_bindgen::rt::vec::Vec<u8>>,
         timeout_ms: u32,
     ) -> Result<
-        exports::wasmcloud::messaging::consumer::BrokerMessage,
+        consumer::BrokerMessage,
         ::wit_bindgen::rt::string::String,
     > {
         // Take all the parameters and serialize them to the opaque payload we need to send
@@ -116,7 +119,7 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
         timeout_ms: u32,
         max_results: u32,
     ) -> Result<
-        ::wit_bindgen::rt::vec::Vec<exports::wasmcloud::messaging::consumer::BrokerMessage>,
+        ::wit_bindgen::rt::vec::Vec<consumer::BrokerMessage>,
         ::wit_bindgen::rt::string::String,
     > {
         let body = ::rmp_serde::to_vec_named(&RequestMultiBody {
@@ -131,7 +134,7 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
 
         // Ugly hack to get around remote derive of type
         #[derive(::serde::Deserialize)]
-        struct Wrapper(#[serde(with = "BrokerMessage")] wasmcloud::messaging::types::BrokerMessage);
+        struct Wrapper(#[serde(with = "BrokerMessage")] consumer::BrokerMessage);
 
         let mut de = ::rmp_serde::Deserializer::new(::std::io::Cursor::new(ret_data));
         <Vec<_> as ::serde::Deserialize>::deserialize(&mut de)
@@ -144,7 +147,7 @@ impl exports::wasmcloud::messaging::consumer::Consumer for WasifillImpl {
     }
 
     fn publish(
-        msg: exports::wasmcloud::messaging::consumer::BrokerMessage,
+        msg: consumer::BrokerMessage,
     ) -> Result<(), ::wit_bindgen::rt::string::String> {
         let body = ::rmp_serde::to_vec_named(&PublishBody {
             msg: export_msg_to_msg(msg),

@@ -72,8 +72,7 @@ interface types {
 }
 
 interface health-check {
-  use types.{health-check-response}
-  
+  use types.{health-check-response}  
   health-request: func() -> health-check-response
 }
 

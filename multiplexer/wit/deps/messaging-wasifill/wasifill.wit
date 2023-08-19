@@ -7,6 +7,6 @@ interface guestcall-messaging {
 world wasifill {
     import wasmcloud:messaging/handler@0.1.0
     import wasmcloud:bus/host
-    export guestcall-messaging
     export wasmcloud:messaging/consumer@0.1.0
+    export guestcall-messaging
 }

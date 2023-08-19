@@ -1,0 +1,4 @@
+dependencies:
+  wasifill: ./component.wasm
+  multiplexer: ./multiplexer/component.wasm
+  actor: ./actor/component.wasm
