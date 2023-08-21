@@ -1,4 +1,5 @@
 target/
 .vscode/
 component.wasm
+*.component.wasm
 build/

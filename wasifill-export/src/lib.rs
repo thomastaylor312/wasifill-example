@@ -1,10 +1,13 @@
 ::wit_bindgen::generate!({
-    world: "wasifill",
+    world: "wasifill-export",
     exports: {
         "wasmcloud:messaging/consumer": WasifillImpl,
-        "wasmcloud:messaging-wasifill/guestcall-messaging": WasifillImpl,
     }
 });
+
+// NOTE: We need this because the generated rust code uses a type alias `pub type BrokerMessage =
+// path::to::common::message::type::BrokerMessage;`. This causes it to be a separate concrete type,
+// so _every_ custom type will need these stupid conversion functions.
 
 fn msg_to_export_msg(
     msg: wasmcloud::messaging::types::BrokerMessage,
@@ -40,25 +43,6 @@ struct BrokerMessage {
 }
 
 struct WasifillImpl;
-
-impl exports::wasmcloud::messaging_wasifill::guestcall_messaging::GuestcallMessaging
-    for WasifillImpl
-{
-    fn guestcall_messaging(
-        operation: ::wit_bindgen::rt::string::String,
-    ) -> Result<(), ::wit_bindgen::rt::string::String> {
-        // Please note that here we only have one operation, but there could be multiple so this
-        // should always generate a match statement
-        match operation.as_ref() {
-            "Message.Handle" => {
-                let mut de = ::rmp_serde::Deserializer::new(std::io::stdin());
-                let msg = BrokerMessage::deserialize(&mut de).map_err(|e| e.to_string())?;
-                wasmcloud::messaging::handler::handle_message(&msg)
-            }
-            _ => Err(format!("unknown operation {}", operation)),
-        }
-    }
-}
 
 // These are the custom types that should be identical to the ones that get generated for the provider stuff
 

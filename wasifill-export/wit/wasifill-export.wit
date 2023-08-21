@@ -1,0 +1,6 @@
+package wasmcloud:messaging-wasifill
+
+world wasifill-export {
+    export wasmcloud:messaging/consumer@0.1.0
+    import wasmcloud:bus/host
+}

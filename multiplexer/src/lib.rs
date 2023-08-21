@@ -18,7 +18,9 @@ impl exports::wasmcloud::bus::guest::Guest for MultiplexerImpl {
 
         match prefix.as_ref() {
             "messaging" => {
-                wasmcloud::messaging_wasifill::guestcall_messaging::guestcall_messaging(&operation)
+                wasmcloud::messaging_wasifill_import::guestcall_messaging::guestcall_messaging(
+                    &operation,
+                )
             }
             // For multiple contracts, other strings would go here
             _ => Err(format!("Unknown operation: {}", operation)),

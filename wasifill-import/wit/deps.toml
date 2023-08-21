@@ -1,0 +1,5 @@
+bus = "../../../wasmcloud/wit/"
+messaging = "../../messaging/"
+wasmcloud-core = "../../../wasmcloud/crates/provider-sdk/wit/"
+
+io = "./overrides/io/"

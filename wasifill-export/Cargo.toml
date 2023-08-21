@@ -1,5 +1,5 @@
 [package]
-name = "wasifill-example"
+name = "wasifill-example-export"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,7 +12,6 @@ crate-type = ["cdylib"]
 wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen.git", rev = "a15cb9dbee4f619b286fc22879a94f7197d55b18" }
 serde = { version = "1", features = ["derive"] }
 rmp-serde = "1"
-wasmcloud-actor = { git = "https://github.com/wasmCloud/wasmCloud.git", branch = "main", version = "0.1" }
 
 [profile.release]
 # Optimize for small code size

@@ -1,0 +1,6 @@
+package wasmcloud:messaging@0.1.0
+
+world actor-messaging {
+    import consumer
+    export handler
+}

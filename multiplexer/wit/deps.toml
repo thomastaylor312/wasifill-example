@@ -1,3 +1,3 @@
 bus = "../../../wasmcloud/wit/"
-messaging-wasifill = "../../wit/"
-io = "../../wit/overrides/io"
+messaging-wasifill = "../../wasifill-import/wit/"
+io = "../../wasifill-import/wit/overrides/io"
