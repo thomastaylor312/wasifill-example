@@ -1,4 +1,7 @@
+search-paths:
+  - ./
 dependencies:
-  wasifill: ./component.wasm
-  multiplexer: ./multiplexer/component.wasm
-  actor: ./actor/component.wasm
+  import: ./wasifill_import.component.wasm
+  export: ./wasifill_export.component.wasm
+  # multiplexer: ./multiplexer.component.wasm
+  actor: ./actor.component.wasm

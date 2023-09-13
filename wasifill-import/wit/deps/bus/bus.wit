@@ -6,14 +6,17 @@ interface lattice {
     /// Implementations of `wasmcloud:bus/lattice` may extend the set of "selectable" interfaces.
     type target-interface = u32
 
+    /// `wasi:blobstore/blobstore` interface target
+    target-wasi-blobstore-blobstore: func() -> target-interface
+
+    /// `wasi:keyvalue/atomic` interface target
+    target-wasi-keyvalue-atomic: func() -> target-interface
+
     /// `wasi:keyvalue/readwrite` interface target
     target-wasi-keyvalue-readwrite: func() -> target-interface
 
     /// `wasi:logging/logging` interface target
     target-wasi-logging-logging: func() -> target-interface
-
-    /// `wasmcloud:blobstore/consumer` interface target
-    target-wasmcloud-blobstore-consumer: func() -> target-interface
 
     /// `wasmcloud:messaging/consumer` interface target
     target-wasmcloud-messaging-consumer: func() -> target-interface
@@ -59,7 +62,7 @@ interface host {
     /// Call an operation of form `namespace:package/interface.operation`, e.g. `wasmcloud:bus/host.call`
     call: func(target: option<target-entity>, operation: string) -> result<tuple<future-result, input-stream, output-stream>, string>
 
-    /// Synchronously call an operation of form `namespace:package/interface.operation`, e.g. `wasmcloud:bus/host.call_sync`
+    /// Synchronously call an operation of form `namespace:package/interface.operation`, e.g. `wasmcloud:bus/host.call-sync`
     call-sync: func(target: option<target-entity>, operation: string, payload: list<u8>) -> result<list<u8>, string>
 }
 

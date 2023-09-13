@@ -20,9 +20,7 @@ struct BrokerMessage {
 
 struct WasifillImpl;
 
-impl exports::wasmcloud::messaging_wasifill_import::guestcall_messaging::GuestcallMessaging
-    for WasifillImpl
-{
+impl exports::wasmcloud::messaging_wasifill_import::guestcall_messaging::Guest for WasifillImpl {
     fn guestcall_messaging(
         operation: ::wit_bindgen::rt::string::String,
     ) -> Result<(), ::wit_bindgen::rt::string::String> {

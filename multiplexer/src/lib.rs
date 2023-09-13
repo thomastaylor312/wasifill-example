@@ -17,7 +17,7 @@ impl exports::wasmcloud::bus::guest::Guest for MultiplexerImpl {
         };
 
         match prefix.as_ref() {
-            "messaging" => {
+            "message" => {
                 wasmcloud::messaging_wasifill_import::guestcall_messaging::guestcall_messaging(
                     &operation,
                 )

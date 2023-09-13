@@ -1,4 +1,4 @@
-use exports::wasmcloud::messaging::handler::{BrokerMessage, Handler};
+use exports::wasmcloud::messaging::handler::{BrokerMessage, Guest};
 
 wit_bindgen::generate!({
     world: "actor",
@@ -9,7 +9,7 @@ wit_bindgen::generate!({
 
 struct MessagingWitTestActor {}
 
-impl Handler for MessagingWitTestActor {
+impl Guest for MessagingWitTestActor {
     /// handle subscription response
     fn handle_message(msg: BrokerMessage) -> Result<(), String> {
         // if the sender wants a reply

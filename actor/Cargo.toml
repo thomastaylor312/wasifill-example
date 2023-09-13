@@ -9,7 +9,7 @@ crate-type = ["cdylib", "rlib"]
 name = "messaging_wit_test"
 
 [dependencies]
-wit-bindgen = { git = "https://github.com/bytecodealliance/wit-bindgen.git", rev = "a15cb9dbee4f619b286fc22879a94f7197d55b18" }
+wit-bindgen = "0.11"
 
 [profile.release]
 # Optimize for small code size
