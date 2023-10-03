@@ -29,7 +29,8 @@ build-wasifills:
 compose:
     @{{wasm_tools}} compose actor.component.wasm -d wasifill_export.component.wasm -o step1.wasm
     @{{wasm_tools}} compose wasifill_import.component.wasm -d step1.wasm -o step2.wasm
-    @{{wasm_tools}} compose multiplexer.component.wasm -d step2.wasm -o composed.component.wasm 
+    @{{wasm_tools}} compose multiplexer.component.wasm -d step2.wasm -o composed.component.wasm
+    @{{just_executable()}} sign
     @rm step1.wasm step2.wasm
 
 sign:
