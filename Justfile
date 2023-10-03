@@ -30,12 +30,11 @@ compose:
     @{{wasm_tools}} compose actor.component.wasm -d wasifill_export.component.wasm -o step1.wasm
     @{{wasm_tools}} compose wasifill_import.component.wasm -d step1.wasm -o step2.wasm
     @{{wasm_tools}} compose multiplexer.component.wasm -d step2.wasm -o composed.component.wasm
-    @{{just_executable()}} sign
     @rm step1.wasm step2.wasm
 
 sign:
     @{{wash}} claims sign --name messaging_wit_test -c wasmcloud:messaging2 composed.component.wasm
 
 # Build the WASM component
-build: build-actor build-multiplexer build-wasifills compose
+build: build-actor build-multiplexer build-wasifills compose sign
    @echo "[success] Signed actor component available at: composed.component_s.wasm"
