@@ -1,5 +1,0 @@
-package wasmcloud:my-actor@0.1.0
-
-world actor {
-    include wasmcloud:messaging/actor-messaging@0.1.0
-}

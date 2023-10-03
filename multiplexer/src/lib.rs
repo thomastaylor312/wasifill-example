@@ -1,16 +1,9 @@
-wit_bindgen::generate!({
-    world: "multiplexer",
-    exports: {
-        "wasmcloud:bus/guest": MultiplexerImpl
-    }
-});
+cargo_component_bindings::generate!();
 
-struct MultiplexerImpl;
+struct Component;
 
-impl exports::wasmcloud::bus::guest::Guest for MultiplexerImpl {
-    fn call(
-        operation: wit_bindgen::rt::string::String,
-    ) -> Result<(), wit_bindgen::rt::string::String> {
+impl bindings::exports::wasmcloud::bus::guest::Guest for Component {
+    fn call(operation: String) -> Result<(), String> {
         let prefix = match operation.split_once('.') {
             Some((prefix, _)) => prefix.to_lowercase(),
             None => return Err(format!("Unknown operation: {}", operation)),
@@ -18,7 +11,7 @@ impl exports::wasmcloud::bus::guest::Guest for MultiplexerImpl {
 
         match prefix.as_ref() {
             "message" => {
-                wasmcloud::messaging_wasifill_import::guestcall_messaging::guestcall_messaging(
+                bindings::wasmcloud::messaging_wasifill_import::guestcall_messaging::guestcall_messaging(
                     &operation,
                 )
             }

@@ -9,9 +9,23 @@ crate-type = ["cdylib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-wit-bindgen = "0.11"
 serde = { version = "1", features = ["derive"] }
 rmp-serde = "1"
+cargo-component-bindings = { git = "https://github.com/thomastaylor312/cargo-component", branch = "feat/custom_derive_attr" }
+serde_json = "1.0.107"
+
+[package.metadata.component.target]
+world = "wasifill-export"
+path = "./wit"
+
+[package.metadata.component]
+adapter = "../wasi_snapshot_preview1.wasm"
+
+[package.metadata.component.target.dependencies]
+"wasmcloud:bus" = { path = "../wit" }
+"wasmcloud:messaging" = { path = "../messaging" }
+"wasi:io" = { path = "../wit/deps/io" }
+"wasi:poll" = { path = "../wit/deps/poll" }
 
 [profile.release]
 # Optimize for small code size

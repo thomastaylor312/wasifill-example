@@ -9,7 +9,14 @@ crate-type = ["cdylib", "rlib"]
 name = "messaging_wit_test"
 
 [dependencies]
-wit-bindgen = "0.11"
+cargo-component-bindings = { git = "https://github.com/thomastaylor312/cargo-component", branch = "feat/custom_derive_attr" }
+
+[package.metadata.component.target]
+world = "actor"
+path = "../messaging"
+
+[package.metadata.component]
+adapter = "../wasi_snapshot_preview1.wasm"
 
 [profile.release]
 # Optimize for small code size
